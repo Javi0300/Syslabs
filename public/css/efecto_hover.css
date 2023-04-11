@@ -1,0 +1,5 @@
+tr:hover td:nth-of-type(1n+1){
+	/* background-color:gray; */
+	/* border-color:rgb(74, 116, 255); */
+    border-bottom-color: rgb(255, 255, 255);
+}
