@@ -1,0 +1,114 @@
+
+                            <div class="desplegable" style="display: block;" >
+                                @if($encabezado != $estxsol->Nombre)
+                                    <div class="alert alert-primary" role="danger" onclick="desplegar('{{$estxsol->Estudio}}');">
+                                        {{$estxsol->Nombre}}
+                                    </div>
+                                   
+
+                                <div class="row text-center" hidden>{{$encabezado = $estxsol->Nombre}}</div>
+                                <div id="contenido" class="contenido{{$estxsol->Estudio}}" style="display: block;">
+                                    <div class="row text-center">
+                                        <div class="col-2 text-left">
+                                            {{-- Prueba --}}
+                                        </div>
+                                        <div class="col-2">
+                                            {{-- Resultado --}}
+                                        </div>
+                                        <div class="col-2">
+                                            {{-- Limites --}}
+                                        </div>
+                                        <div class="col-2">
+                                            {{-- Medida --}}
+                                        </div>
+                                        
+                                        <div class="col-2">
+                                            {{-- Fórmula --}}
+                                        </div>
+                                        
+                                        <div class="col-1">
+                                            
+                                        </div>
+                                        <div class="col-1">
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">                                                                            
+                                        <div class="col-2">
+                                            {{$estxsol->Prueba}}
+                                        </div>
+                                        <div class="col-2">
+                                            <div class="input-group">
+                                                @if($estxsol->Resultado >= $estxsol->Valmin && $estxsol->Resultado <= $estxsol->ValMax)
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text">
+                                                            <i id="palomita{{$estxsol->id}}" class="fa fa-check" aria-hidden="true" style="color:green"></i>
+                                                        </div>
+                                                    </div>
+                                                @endif
+                                                @if($estxsol->Resultado > $estxsol->ValMax)
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text">
+                                                            <i id="palomita{{$estxsol->id}}" class="fa fa-arrow-up" aria-hidden="true" style="color:red"></i>
+                                                        </div>
+                                                    </div>
+                                                @endif
+    
+                                                @if($estxsol->Resultado < $estxsol->Valmin)
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text">
+                                                            <i id="palomita{{$estxsol->id}}" class="fa fa-arrow-up" aria-hidden="true" style="color:red"></i>
+                                                        </div>
+                                                    </div>
+                                                @endif
+    
+                                                @if($estxsol->Resultado == "")
+                                                <input id="Resultado{{$estxsol->id}}" name="Resultado[]" class="form-control {{$estxsol->ClavePrueba}} text-box single-line" tabindex="{{$estxsol->id}}" type="number" placeholder="0" onfocus="usarformula({{$estxsol->id}});" onclick="seleccionarResultado({{$estxsol->id}});" onchange="estatus({{$estxsol->id}});">
+                                                <p id="mensaje_formula_error{{$estxsol->id}}" style="color: red;"></p>
+                                                @else
+                                                <input id="Resultado{{$estxsol->id}}" name="Resultado[]" class="form-control {{$estxsol->ClavePrueba}} text-box single-line" tabindex="{{$estxsol->id}}" type="number" value="{{$estxsol->Resultado}}" onfocus="usarformula({{$estxsol->id}});" onclick="seleccionarResultado({{$estxsol->id}});" onchange="estatus({{$estxsol->id}});">
+                                                <p id="mensaje_formula_error{{$estxsol->id}}" style="color: red;"></p>
+                                                @endif
+                                                    
+                                                <input name="id[]" hidden readonly value="{{$estxsol->id}}">
+                                                    
+                                            </div>
+                                        </div>
+                                        @if($estxsol->TextoValores == "")
+                                            <div class="col-2 text-center">
+                                                No hay valores
+                                            </div>
+                                        @else
+                                            <div class="col-2 text-center">
+                                                {{$estxsol->TextoValores}}
+                                                <input id="ValMin{{$estxsol->id}}" hidden readonly value="{{$estxsol->Valmin}}">
+                                                <input id="ValMax{{$estxsol->id}}" hidden readonly value="{{$estxsol->ValMax}}">
+                                            </div>
+                                        @endif
+                                        <div class="col-2 text-center">
+                                            {{$estxsol->Medida}}
+                                        </div>
+                                        <div class="col-2 text-center">
+                                            @if($estxsol->formula != null)
+                                            <input id="txtformula{{$estxsol->id}}" value="{{$estxsol->formula}}" readonly style="border: 0px; text-align: center;">
+                                            @endif  
+                                        </div>
+                                        <div class="col-1 text-center">
+                                            @if($estxsol->antibiograma == 1)
+                                            <button title="Ver antibiograma" class="btn btn-primary" type="button" onclick="llamarformulario({{$estxsol->id}});">
+                                                <i class="fa fa-archive" aria-hidden="true"></i>
+                                            </button>
+                                            @endif
+                                            @if($estxsol->editor_texto == 1)
+                                            <button title="Usar Editor de Texto" class="btn btn-primary" type="button" onclick="llamarEditorTexto({{$estxsol->id}});">
+                                                <i class="fa fa-file" aria-hidden="true"></i>
+                                            </button>
+                                            @endif
+                                        </div>
+                                        <div class="col-1 text-center">
+                                            <input id="Estado{{$estxsol->id}}" type="checkbox" {{$estxsol->Estatus=="1"?'Checked':''}} class="form-check-input" onclick="cambiarEstado({{$estxsol->id}});">
+                                            <input id="EstadoDB{{$estxsol->id}}" name="Estado[]" hidden readonly value="{{$estxsol->Estatus}}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
